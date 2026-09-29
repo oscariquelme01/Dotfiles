@@ -33,16 +33,6 @@ local M = {}
 function M.apply(config)
 	utils.add_keys(config, {
 		{
-			key = "s",
-			mods = utils.mod .. "|ALT",
-			action = wezterm.action_callback(function(win, pane)
-				local ws = wezterm.mux.get_active_workspace()
-				wezterm.log_info("resurrect: manually saving workspace " .. ws)
-				resurrect.state_manager.save_state(resurrect.workspace_state.get_workspace_state())
-				resurrect.window_state.save_window_action()
-			end),
-		},
-		{
 			key = "r",
 			mods = utils.mod .. "|ALT",
 			action = wezterm.action_callback(function(win, pane)

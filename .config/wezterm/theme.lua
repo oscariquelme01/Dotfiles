@@ -58,11 +58,6 @@ function M.apply(config)
 
 	-- Colors
 	config.color_scheme = "Vesper"
-
-	-- Window
-	-- Closest equivalent to Alacritty's "Buttonless" (macOS): hide title bar but
-	-- keep window resizable. On other platforms this just removes decorations.
-	config.window_decorations = "RESIZE"
 end
 
 return M

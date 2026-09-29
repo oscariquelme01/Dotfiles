@@ -13,8 +13,9 @@ fi
 
 # ---- .oh-my-zsh (cross platform) ----
 export ZSH="$HOME/.oh-my-zsh"
-plugins=(git sudo zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git sudo zsh-autosuggestions zsh-syntax-highlighting zsh-fzf-history-search)
 source $ZSH/oh-my-zsh.sh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#888888'
 
 # ---- PATH ----
 export PATH="$PATH:$HOME/.local/bin"
@@ -30,9 +31,10 @@ else
 fi
 
 # ---- Keybindings ----
+bindkey -v 
 bindkey '^[0c' forward-word
 bindkey '^[0d' backward-word
-bindkey -v 
+# bindkey '^R' fzf-history-widget
 
 # ---- Aliases ----
 alias ls="lsd"
@@ -44,6 +46,7 @@ alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 export EDITOR="nvim"
+source <(fzf --zsh)
 
 # Git diff for a specific commit (picked up by .gitconfig)
 gitchanged ()
