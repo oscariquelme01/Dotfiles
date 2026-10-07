@@ -1,0 +1,55 @@
+# System destination: /var/lib/noctalia-greeter/greeter.toml
+# Match the current non-uwsm Hyprland startup; no automatic login.
+[session]
+default = "Hyprland"
+
+[user]
+default = "topi"
+
+[appearance]
+scheme = "Synced"
+theme_mode = "dark"
+password_style = "default"
+hide_logo = true
+font_family = "sans-serif"
+
+# Vesper dark palette from Noctalia's installed community palette.
+# This curated palette takes precedence over future appearance sync.
+[appearance.palette]
+primary = "#FFC799"
+on_primary = "#000000"
+secondary = "#99FFE4"
+on_secondary = "#000000"
+tertiary = "#FBADFF"
+on_tertiary = "#000000"
+error = "#FF8080"
+on_error = "#000000"
+surface = "#0C0C0C"
+on_surface = "#FFFFFF"
+surface_variant = "#1C1C1C"
+on_surface_variant = "#A0A0A0"
+outline = "#505050"
+shadow = "#000000"
+hover = "#282828"
+on_hover = "#FFFFFF"
+
+[appearance.wallpaper]
+path = "/var/lib/noctalia-greeter/wallpaper-vesper.png"
+fill_mode = "crop"
+
+# Only the laptop panel has an explicit scale; desktop outputs use auto detection.
+[output]
+scales = "eDP-1:2"
+
+[idle]
+timeout = 300
+
+[cursor]
+size = 24
+
+[keyboard]
+layout = "us,es"
+options = "grp:win_space_toggle"
+
+[auth]
+allow_empty_password = false

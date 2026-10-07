@@ -1,0 +1,60 @@
+# Minimal daily-driver baseline. GUI overrides in ~/.local/state/noctalia/settings.toml
+# take precedence; keep existing wallpaper, dock, and other personal settings there.
+
+[theme]
+source = "community"
+community_palette = "Vesper"
+mode = "dark"
+
+# Keep workspace pill shapes/animations, but replace bright Vesper fills with charcoal.
+[widget.workspaces]
+focused_color = "#343434"
+occupied_color = "#1C1C1C"
+empty_color = "#101010"
+change_color_on_hover = false
+
+[shell]
+polkit_agent = true
+clipboard_enabled = true
+
+[shell.window_switcher]
+mru = true
+
+# Reapply physical-monitor wallpapers once Noctalia's IPC is ready (login/restart).
+[hooks]
+started = 'python "$HOME/.config/hypr/scripts/monitor-wallpaper.py"'
+
+[shell.screenshot]
+freeze_screen = true
+confirm_region = true
+copy_to_clipboard = true
+save_to_file = true
+directory = "/home/topi/Pictures/Screenshots"
+annotate = false
+close_on_copy = true
+close_on_save = true
+
+[notification]
+enable_daemon = true
+
+[lockscreen]
+enabled = true
+lock_before_suspend = true
+
+[idle]
+behavior_order = ["lock", "screen-off", "lock-and-suspend"]
+
+[idle.behavior.lock]
+enabled = true
+action = "lock"
+timeout = 300
+
+[idle.behavior.screen-off]
+enabled = true
+action = "screen_off"
+timeout = 600
+
+[idle.behavior.lock-and-suspend]
+enabled = false
+action = "lock_and_suspend"
+timeout = 900
