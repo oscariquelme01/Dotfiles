@@ -3,8 +3,34 @@
   "theme": {
     "name": "system"
   },
+  "tabs": {
+    "mode": "on",
+    "scope": "cwd",
+    "indicators": "numbers"
+  },
   "plugins": [
-    "opencode-vim@latest"
+    {
+      "package": "opencode-vim@latest",
+      "options": {
+        "vim": {
+          "keymaps": {
+            "normal": {
+              "<Space>ff": "command:session.list",
+              "<Space>fb": "command:open.menu",
+              "<Space>fp": "command:command.palette.show",
+              "<Space>fs": "command:session.child.first",
+              "<Space>?": "command:which-key.toggle",
+              "ts": "command:session.new",
+              "tp": "command:session.tab.previous",
+              "tn": "command:session.tab.next",
+              "tc": "command:session.tab.close",
+              "tt": "command:session.rename"
+            }
+          }
+        }
+      }
+    },
+		"@safwan-o/opencode-voice"
   ],
   "diffs": {
     "wrap": "word"
