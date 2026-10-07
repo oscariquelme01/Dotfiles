@@ -1,6 +1,6 @@
-# Vespere Theme for Mailspring
+# Vesper Theme for Mailspring
 
-**Vespere** is my fork of the
+**Vesper** is my fork of the
 [Sparky Mailspring Theme](https://github.com/siniux/Sparky-Mailspring-Theme),
 adapted with a palette inspired by
 [Vesper](https://github.com/raunofreiberg/vesper) by Rauno Freiberg.
@@ -12,7 +12,7 @@ near-black surfaces with peach accents and mint highlights.
 
 1. Open Mailspring and choose **Edit → Install Theme…** from the menu bar.
 2. Select this folder (the one containing `package.json`).
-3. Choose **Vespere** in **Preferences → Appearance** if it isn't selected automatically.
+3. Choose **Vesper** in **Preferences → Appearance** if it isn't selected automatically.
 
 ## Palette
 

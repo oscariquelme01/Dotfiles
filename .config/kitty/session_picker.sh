@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SESSION_DIR="$HOME/.local/share/kitty/sessions"
+mkdir -p "$SESSION_DIR" || exit 1
 
 selected=$(
     find "$SESSION_DIR" -maxdepth 1 -type f \

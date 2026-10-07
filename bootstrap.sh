@@ -2,10 +2,13 @@
 
 set -uo pipefail
 
-readonly REPO_URL="https://github.com/oscariquelme01/the-dotfiles.git"
+readonly REPO_URL="https://github.com/oscariquelme01/Dotfiles.git"
 readonly DOTFILES_DIR="$HOME/.dotfiles"
 readonly RESOURCES_DIR="$HOME/.config/dotfiles"
+readonly PERSONAL_REPO_URL="https://github.com/oscariquelme01/personal-dotfiles.git"
+readonly PERSONAL_DIR="$HOME/.local/share/personal-dotfiles"
 readonly BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+readonly NVIM_TAG="v0.12.0"
 
 FAILED=()
 INSTALL_PERSONAL_APPS=false
@@ -130,6 +133,7 @@ checkout_dotfiles() {
     local source
     local destination
     local fresh_clone=false
+    local previous_name previous_email
 
     if [[ ! -d "$DOTFILES_DIR" ]]; then
         info "Cloning the dotfiles repository"
@@ -138,6 +142,8 @@ checkout_dotfiles() {
     fi
 
     if [[ "$fresh_clone" == true ]]; then
+        previous_name=$(git config --global --includes --get user.name 2>/dev/null) || previous_name=""
+        previous_email=$(git config --global --includes --get user.email 2>/dev/null) || previous_email=""
         while IFS= read -r path; do
             source="$HOME/$path"
             [[ -e "$source" || -L "$source" ]] || continue
@@ -151,10 +157,73 @@ checkout_dotfiles() {
     dotfiles checkout || die "Could not check out the dotfiles"
     dotfiles config --local status.showUntrackedFiles no
 
+    if [[ "$fresh_clone" == true ]]; then
+        if [[ -n "$previous_name" ]]; then
+            git config --file="$HOME/.gitconfig.local" user.name "$previous_name" || die "Could not preserve Git name"
+        fi
+        if [[ -n "$previous_email" ]]; then
+            git config --file="$HOME/.gitconfig.local" user.email "$previous_email" || die "Could not preserve Git email"
+        fi
+    fi
+
     if [[ -d "$BACKUP_DIR" ]]; then
         info "Conflicting files were backed up to $BACKUP_DIR"
     fi
 }
+
+install_neovim() (
+    # Subshell keeps the cleanup trap and build environment local to this step.
+    local prefix="$HOME/.local/opt/neovim/$NVIM_TAG"
+    local launcher="$HOME/.local/bin/nvim"
+    local build_dir tool version
+
+    version=$("$prefix/bin/nvim" --version 2>/dev/null) || version=""
+    if [[ -f "$prefix/.bootstrap-complete" && "${version%%$'\n'*}" == "NVIM $NVIM_TAG" ]]; then
+        info "Neovim $NVIM_TAG is already installed; skipping the build"
+    else
+        for tool in git make cmake ninja cc c++; do
+            command -v "$tool" &>/dev/null || {
+                warn "Cannot build Neovim: missing $tool"
+                return 1
+            }
+        done
+
+        build_dir=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-neovim.XXXXXX") || return 1
+        trap 'rm -rf -- "$build_dir"' EXIT
+
+        info "Building Neovim $NVIM_TAG from source"
+        git clone --depth=1 --branch "$NVIM_TAG" \
+            https://github.com/neovim/neovim.git "$build_dir/source" || return 1
+        git -C "$build_dir/source" checkout --detach "refs/tags/$NVIM_TAG" || return 1
+        make -C "$build_dir/source" CMAKE_BUILD_TYPE=Release \
+            "CMAKE_INSTALL_PREFIX=$prefix" || return 1
+
+        # Preserve an incomplete or unmanaged installation before replacing it.
+        if [[ -e "$prefix" || -L "$prefix" ]]; then
+            mkdir -p "$BACKUP_DIR/.local/opt/neovim" || return 1
+            mv -T -- "$prefix" "$BACKUP_DIR/.local/opt/neovim/$NVIM_TAG" || return 1
+        fi
+        cmake --install "$build_dir/source/build" || return 1
+
+        version=$("$prefix/bin/nvim" --version) || return 1
+        [[ "${version%%$'\n'*}" == "NVIM $NVIM_TAG" ]] || return 1
+        # Check the installed runtime without loading personal config or plugins.
+        "$prefix/bin/nvim" --headless -u NONE -i NONE \
+            '+lua if vim.fn.filereadable(vim.env.VIMRUNTIME .. "/doc/help.txt") ~= 1 then vim.cmd("cquit 1") end' \
+            +qa || return 1
+        touch "$prefix/.bootstrap-complete" || return 1
+    fi
+
+    mkdir -p "$HOME/.local/bin" || return 1
+    if [[ -e "$launcher" || -L "$launcher" ]]; then
+        if [[ -L "$launcher" && $(readlink "$launcher") == "$prefix/bin/nvim" ]]; then
+            return 0
+        fi
+        mkdir -p "$BACKUP_DIR/.local/bin" || return 1
+        mv -T -- "$launcher" "$BACKUP_DIR/.local/bin/nvim" || return 1
+    fi
+    ln -s "$prefix/bin/nvim" "$launcher"
+)
 
 install_shell_plugins() {
     local zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
@@ -175,39 +244,118 @@ install_shell_plugins() {
     [[ -d "$zsh_custom/plugins/zsh-fzf-history-search" ]] || \
         git clone --depth=1 https://github.com/joshskidmore/zsh-fzf-history-search "$zsh_custom/plugins/zsh-fzf-history-search" || \
         FAILED+=("zsh-fzf-history-search")
+    [[ -d "$zsh_custom/plugins/zsh-vi-mode" ]] || \
+        git clone --depth=1 https://github.com/jeffreytse/zsh-vi-mode.git "$zsh_custom/plugins/zsh-vi-mode" || \
+        FAILED+=("zsh-vi-mode")
+    [[ -d "$zsh_custom/plugins/zsh-autopair" ]] || \
+        git clone --depth=1 https://github.com/hlissner/zsh-autopair.git "$zsh_custom/plugins/zsh-autopair" || \
+        FAILED+=("zsh-autopair")
+}
+
+prepare_personal_repo() {
+    local origin
+    [[ "$PERSONAL_DIR" == /* ]] || {
+        warn "PERSONAL_DIR must be an absolute path."
+        return 1
+    }
+    if [[ -e "$PERSONAL_DIR" || -L "$PERSONAL_DIR" ]]; then
+        [[ -e "$PERSONAL_DIR/.git" ]] || return 1
+        origin=$(git -C "$PERSONAL_DIR" remote get-url origin) || return 1
+        case "$origin" in
+            "$PERSONAL_REPO_URL"|git@github.com:oscariquelme01/personal-dotfiles.git) ;;
+            *) warn "Unexpected personal repository origin: $origin"; return 1 ;;
+        esac
+        # This checkout is editable runtime configuration, not a disposable cache.
+        info "Reusing $PERSONAL_DIR without pulling or changing local edits"
+    else
+        mkdir -p "$(dirname "$PERSONAL_DIR")" || return 1
+        git clone "$PERSONAL_REPO_URL" "$PERSONAL_DIR" || return 1
+    fi
+    [[ -f "$PERSONAL_DIR/packages.txt" && -f "$PERSONAL_DIR/git/gitconfig.personal" ]]
+}
+
+choose_personal_setup() {
+    local package
+    ask "Fetch optional personal applications and Git configuration?" || return 0
+    if ! prepare_personal_repo; then
+        FAILED+=("personal-dotfiles clone/update")
+        return
+    fi
+
+    info "Optional personal applications"
+    while IFS= read -r package; do
+        if [[ "$package" == mailspring-bin ]]; then
+            printf '  - Mailspring with the Vesper Theme (%s)\n' "$package"
+        else
+            printf '  - %s\n' "$package"
+        fi
+    done < <(read_packages "$PERSONAL_DIR/packages.txt")
+    ask "Install the applications listed above?" && INSTALL_PERSONAL_APPS=true
+    ask "Install Oscar's personal and per-organization Git configuration?" && INSTALL_PERSONAL_GIT=true
+    return 0
+}
+
+deploy_personal_directory() {
+    local source="$1" destination="$2" backup
+    [[ -d "$source" ]] || return 1
+    source=$(realpath -- "$source") || return 1
+    if [[ -L "$destination" && $(realpath -- "$destination") == "$source" ]]; then
+        return 0
+    fi
+    if [[ -e "$destination" || -L "$destination" ]]; then
+        mkdir -p "$BACKUP_DIR" || return 1
+        backup=$(mktemp -d "$BACKUP_DIR/personal.XXXXXX") || return 1
+        mv -T -- "$destination" "$backup/$(basename "$destination")" || return 1
+        info "Backed up $destination to $backup"
+    fi
+    mkdir -p "$(dirname "$destination")" || return 1
+    ln -sT -- "$source" "$destination"
 }
 
 configure_local_git() {
     local local_config="$HOME/.gitconfig.local"
-    local personal_config="$HOME/.config/dotfiles/personal/git/gitconfig.personal"
+    local personal_config="$HOME/.config/git/personal/gitconfig.personal"
+    local legacy status include_file
 
-    git config --file="$local_config" split-diffs.theme-directory "$HOME/.config/git-split-diffs/themes/"
-    git config --file="$local_config" split-diffs.theme-name vesper
+    git config --file="$local_config" split-diffs.theme-directory "$HOME/.config/git-split-diffs/themes/" || return 1
+    git config --file="$local_config" split-diffs.theme-name vesper || return 1
 
     if [[ "$INSTALL_PERSONAL_GIT" == true ]]; then
-        if ! git config --file="$local_config" --get-all include.path 2>/dev/null | \
-            grep -Fxq "$personal_config"; then
-            git config --file="$local_config" --add include.path "$personal_config"
+        deploy_personal_directory "$PERSONAL_DIR/git" "$HOME/.config/git/personal" || return 1
+        # Remove only our own includes, then append the deployed identity last.
+        for legacy in "$HOME/.config/dotfiles/personal/git/gitconfig.personal" \
+            '~/.config/dotfiles/personal/git/gitconfig.personal' \
+            "$personal_config" '~/.config/git/personal/gitconfig.personal'; do
+            git config --file="$local_config" --fixed-value --unset-all include.path "$legacy"
+            status=$?
+            [[ $status == 0 || $status == 5 ]] || return 1
+        done
+        include_file=$(mktemp) || return 1
+        if ! git config --file="$include_file" include.path "$personal_config" || \
+            ! { printf '\n'; cat "$include_file"; } >> "$local_config"; then
+            rm -f "$include_file"
+            return 1
         fi
+        rm -f "$include_file"
     fi
+    return 0
 }
 
-install_vespere_theme() {
-    local source="$RESOURCES_DIR/personal/mailspring/vespere-theme"
-    local destination="$HOME/.config/Mailspring/packages/mailspring-theme-vespere"
+install_mail_vesper_theme() {
+    local source="$PERSONAL_DIR/mailspring/vesper-theme"
+    local destination="$HOME/.config/Mailspring/packages/mailspring-theme-vesper"
 
     [[ -d "$source" ]] || {
-        FAILED+=("Vespere Theme source")
+        FAILED+=("Vesper Theme source")
         return
     }
 
-    mkdir -p "$destination"
-    cp -a "$source/." "$destination/" || {
-        FAILED+=("Vespere Theme")
+    deploy_personal_directory "$source" "$destination" || {
+        FAILED+=("Vesper Theme")
         return
     }
 
-    info "Vespere Theme installed. Select it in Mailspring under Preferences → Appearance."
+    info "Vesper Theme installed. Select it in Mailspring under Preferences → Appearance."
 }
 
 print_summary() {
@@ -231,18 +379,11 @@ main() {
     command -v pacman &>/dev/null || die "pacman is required."
     [[ $EUID -ne 0 ]] || die "Run this script as a regular user, not as root."
 
-    cat <<'EOF'
-
-Optional personal applications:
-  - Mailspring with the Vespere Theme
-EOF
-    ask "Install the personal applications listed above?" && INSTALL_PERSONAL_APPS=true
-    ask "Install Oscar's personal and per-organization Git configuration?" && INSTALL_PERSONAL_GIT=true
-
     command -v git &>/dev/null || \
         sudo pacman -S --needed --noconfirm git || die "Git is required to clone the dotfiles repository."
 
     checkout_dotfiles
+    choose_personal_setup
 
     info "Installing core Arch dependencies"
     install_pacman_manifest "$RESOURCES_DIR/packages/core-pacman.txt"
@@ -250,13 +391,19 @@ EOF
 
     if [[ "$INSTALL_PERSONAL_APPS" == true ]]; then
         info "Installing optional personal applications"
-        install_aur_manifest "$RESOURCES_DIR/packages/personal-apps.txt"
-        install_vespere_theme
+        install_aur_manifest "$PERSONAL_DIR/packages.txt"
+        if read_packages "$PERSONAL_DIR/packages.txt" | grep -Fxq mailspring-bin; then
+            install_mail_vesper_theme
+        fi
     fi
 
     install_shell_plugins
-    configure_local_git
+    mkdir -p "$HOME/.local/share/kitty/sessions" || FAILED+=("Kitty sessions directory")
+    configure_local_git || FAILED+=("local/personal Git configuration")
+    # Build only after all requested package installations have been attempted.
+    install_neovim || FAILED+=("Neovim $NVIM_TAG source build/install")
     print_summary
+    ((${#FAILED[@]} == 0))
 }
 
 main "$@"

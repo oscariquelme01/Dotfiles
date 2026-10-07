@@ -19,6 +19,7 @@ pipewire-pulse
 wireplumber
 brightnessctl
 wl-clipboard
+xdg-utils
 
 # Terminal and shell
 kitty
@@ -28,8 +29,11 @@ fzf
 zoxide
 ttf-firacode-nerd
 
+# Neovim is built from the pinned tag in bootstrap.sh (base-devel above is also required).
+cmake
+ninja
+
 # Development environment
-neovim
 ripgrep
 fd
 tree-sitter-cli
@@ -38,6 +42,13 @@ npm
 nvm
 python
 python-pynvim
+
+# Neovim document support: latexmk, LaTeX, PDF viewing, Markdown math
+texlive-binextra
+texlive-latex
+zathura
+zathura-pdf-mupdf
+python-pylatexenc
 
 # Terminal utilities
 bat
