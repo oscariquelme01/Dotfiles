@@ -1,0 +1,61 @@
+@import 'ui-variables';
+
+// Mailspring copies email-frame.less into the isolated message iframe and
+// removes this prefix. Keep these overrides out of the surrounding app.
+.ignore-in-parent-frame {
+  html {
+    color-scheme: dark;
+  }
+
+  html, body {
+    background: @vesper-surface !important;
+    color: @vesper-text;
+  }
+
+  // Use the palette directly, including when Mailspring's inversion mode is on.
+  // Images remain in their original colors rather than being inverted.
+  html body,
+  body img {
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  #inbox-html-wrapper,
+  #inbox-html-wrapper.has-background,
+  #inbox-plain-wrapper {
+    background: @vesper-surface !important;
+    color: @vesper-text !important;
+    font-family: system-ui, sans-serif;
+  }
+
+  // HTML emails often carry inline light backgrounds and dark text.
+  #inbox-html-wrapper * {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-color: @vesper-border !important;
+  }
+
+  #inbox-html-wrapper a,
+  #inbox-html-wrapper a * {
+    color: @accent !important;
+  }
+
+  #inbox-html-wrapper a:hover,
+  #inbox-html-wrapper a:hover * {
+    color: @vesper-peach-hover !important;
+  }
+
+  #inbox-html-wrapper blockquote {
+    color: @vesper-muted !important;
+    border-left-color: @vesper-border !important;
+  }
+
+  #inbox-html-wrapper .search-match,
+  #inbox-html-wrapper search-match {
+    background-color: @text-color-search-match !important;
+
+    &.current-match {
+      background-color: @text-color-search-current-match !important;
+    }
+  }
+}

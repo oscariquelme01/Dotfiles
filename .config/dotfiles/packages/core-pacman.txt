@@ -1,0 +1,45 @@
+# Base and bootstrap tools
+base-devel
+git
+curl
+less
+unzip
+
+# Arch desktop
+hyprland
+noctalia
+greetd
+xdg-desktop-portal-hyprland
+polkit
+networkmanager
+bluez
+bluez-utils
+pipewire
+pipewire-pulse
+wireplumber
+brightnessctl
+wl-clipboard
+
+# Terminal and shell
+kitty
+zsh
+starship
+fzf
+zoxide
+ttf-firacode-nerd
+
+# Development environment
+neovim
+ripgrep
+fd
+tree-sitter-cli
+nodejs
+npm
+nvm
+python
+python-pynvim
+
+# Terminal utilities
+bat
+lsd
+lazygit

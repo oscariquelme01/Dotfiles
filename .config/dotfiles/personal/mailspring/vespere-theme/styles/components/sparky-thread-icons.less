@@ -1,0 +1,122 @@
+// Remove inverted color effects
+.thread-list .focused .thread-icon,
+.draft-list .focused .thread-icon,
+.thread-list .focused .draft-icon,
+.draft-list .focused .draft-icon,
+.thread-list .focused .mail-important-icon,
+.draft-list .focused .mail-important-icon,
+.thread-list.handler-split .list-item.selected .thread-icon,
+.thread-list.handler-split .list-item.selected .draft-icon,
+.thread-list.handler-split .list-item.selected .mail-important-icon {
+  -webkit-filter: none !important;
+}
+
+// Base settings for replacing backgrounds with -webkit-filters for easier color changes
+.thread-list .thread-icon {
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 12px;
+  -webkit-mask-position: center;
+}
+
+// Change color of unread dot icon
+.thread-list .thread-icon.thread-icon-unread {
+  background-image: none;
+  background-color: @inbox-color;
+  -webkit-mask-image: url(../static/images/thread-list/icon-unread-@1x.png);
+}
+
+// replace unread icon with star icon on thread item hover
+.thread-list .list-item:hover .thread-icon.thread-icon-unread {
+  background-color: @vesper-muted;
+  -webkit-mask-image: url(../static/images/toolbar/toolbar-star-selected@1x.png);
+  &:hover { background-color: @star-color-hover; }
+}
+
+//url("C:/Users/joaod/AppData/Local/Mailspring/app-1.10.3/resources/app.asar/static/images/toolbar/toolbar-star-selected@1x.png")
+
+// Replace outlined star icon with solid one
+.thread-list .thread-icon.thread-icon-star,
+.thread-list .thread-icon-star-on-hover:hover {
+  background-image: none;
+  background-color: @star-color;
+  -webkit-mask-image: url(../static/images/toolbar/toolbar-star-selected@1x.png);
+}
+
+// for Read messages, use the solid star on item hover as well
+.thread-list .list-item:hover .thread-icon-none {
+  background-image: none;
+  background-color: @vesper-muted;
+  -webkit-mask-image: url(../static/images/toolbar/toolbar-star-selected@1x.png);
+}
+
+// Make the star a bit darker on direct hover
+.thread-list .list-item:hover .thread-icon-none:hover {
+  background-image: none;
+  background-color: @star-color-hover;
+  -webkit-mask-image: url(../static/images/toolbar/toolbar-star-selected@1x.png);
+}
+
+.thread-icon.thread-icon-attachment {
+  opacity: 0.5;
+  background-size: 12px;
+}
+
+// The gradient behind threadlist hover icons (Snooze, Arvhive Delete)
+.thread-list .list-item:hover .list-column-HoverActions .inner,
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner,
+.thread-list .list-item.selected:hover .list-column-HoverActions .inner,
+.thread-list.handler-split .list-item.selected:hover .list-column-HoverActions .inner {
+  background-image: linear-gradient(to right, fade(@vesper-hover, 0%) 0%, @vesper-hover 40%, @vesper-hover 100%);
+}
+
+// Draw quick actions as masks so dark bitmap assets never disappear on dark UI.
+.thread-list .list-item .list-column-HoverActions .inner .action {
+  position: relative;
+  background: @vesper-input !important;
+  color: @vesper-text;
+  border: 1px solid @vesper-border;
+  border-radius: 6px;
+  -webkit-filter: none !important;
+  filter: none !important;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+  &:hover {
+    background: @vesper-hover !important;
+    border-color: currentColor;
+  }
+
+  &.action-archive {
+    color: @archive-color;
+    &::before {
+      -webkit-mask-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M3 3h18v5H3zM5 8v13h14V8M10 12h4"/%3E%3C/svg%3E');
+    }
+  }
+
+  &.action-trash {
+    color: @trash-color;
+    &::before {
+      -webkit-mask-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/%3E%3C/svg%3E');
+    }
+  }
+
+  &.action-snooze {
+    color: @snoozed-color;
+    &::before {
+      -webkit-mask-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"%3E%3Ccircle cx="12" cy="12" r="9"/%3E%3Cpath d="M12 7v5l3 2"/%3E%3C/svg%3E');
+    }
+  }
+}
+

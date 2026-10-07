@@ -1,0 +1,171 @@
+// Shared surfaces and controls that otherwise retain Mailspring's light defaults.
+body {
+  background: @vesper-bg;
+  color: @vesper-text;
+  color-scheme: dark;
+}
+
+::selection {
+  background: fade(@vesper-text, 15%);
+  color: @vesper-text;
+}
+
+input, textarea, select {
+  color: @vesper-text;
+  caret-color: @accent;
+}
+
+input::placeholder, textarea::placeholder {
+  color: @vesper-muted;
+}
+
+.sheet-toolbar-container,
+body.is-blurred .sheet-toolbar-container {
+  background: @vesper-bg;
+}
+
+.btn.btn-toolbar {
+  background: @vesper-input;
+  color: @vesper-text;
+}
+
+.btn.btn-toolbar:hover {
+  background: @vesper-hover;
+}
+
+.btn.btn-emphasis,
+.btn.btn-action {
+  background: @accent;
+  color: @vesper-bg;
+  border-color: @accent;
+  text-shadow: none;
+
+  &:before { background: none; }
+  &:hover, &:active { background: @vesper-peach-hover; }
+  img.content-mask { background-color: @vesper-bg; }
+}
+
+// Send is a split dropdown: color both halves, including the built-in gradient.
+.composer-inner-wrap .button-dropdown.btn-send.btn-emphasis {
+  .primary-item,
+  .secondary-picker,
+  .only-item {
+    background: @vesper-mint;
+    color: @vesper-bg;
+    border-color: @vesper-mint;
+    box-shadow: none;
+    text-shadow: none;
+
+    &::before { background: none; }
+    &:hover, &:active { background: lighten(@vesper-mint, 5%); }
+    img.content-mask { background-color: @vesper-bg; }
+    img.content-dark, img.content-light { filter: none !important; }
+  }
+
+  .secondary-picker {
+    border-left: 1px solid fade(@vesper-bg, 20%);
+  }
+}
+
+.thread-list .list-item:not(.unread):not(.selected):not(.focused) {
+  color: @vesper-muted;
+}
+
+.thread-list .list-item.unread {
+  color: @vesper-text;
+}
+
+// Keep selection visible even while the pointer is over a selected row.
+.list-tabular .list-tabular-item.selected:hover,
+.list-tabular .list-tabular-item.focused:hover,
+.draft-list .list-tabular .list-tabular-item.selected:hover {
+  background: @vesper-selection !important;
+}
+
+.thread-list .list-item.selected:hover .list-column-HoverActions .inner,
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner {
+  background-image: linear-gradient(to right, fade(@vesper-selection, 0%), @vesper-selection 40%);
+}
+
+// Only invert bitmap UI icons; colored mask icons and email images keep their colors.
+img.content-dark,
+img.content-light,
+.thread-list .thread-icon.thread-icon-attachment,
+.thread-list .thread-icon.thread-icon-replied,
+.thread-list .thread-icon.thread-icon-forwarded {
+  -webkit-filter: invert(100%) !important;
+  filter: invert(100%) !important;
+}
+
+.nylas-outline-view .item .item-count-box.alt-count {
+  background: @accent;
+  color: @vesper-bg;
+}
+
+.account-sidebar .item:not(.selected):hover {
+  background: @vesper-hover;
+  color: @vesper-text;
+}
+
+.thread-search-bar,
+.thread-search-bar .suggestions,
+.menu {
+  background: @vesper-input;
+  color: @vesper-text;
+}
+
+.thread-search-bar .suggestions .suggestion.selected,
+.menu .item.selected .primary,
+.menu .item.selected .secondary {
+  color: @accent;
+}
+
+#message-list .message-item-wrap .message-item-white-wrap,
+#message-list .footer-reply-area-wrap,
+.composer-full-window,
+.composer-inner-wrap,
+.composer-inner-wrap .composer-header,
+.composer-inner-wrap .composer-body {
+  background: @vesper-surface;
+  color: @vesper-text;
+}
+
+.RichEditor-toolbar .floating-container {
+  background: @vesper-surface;
+}
+
+.RichEditor-root blockquote,
+.RichEditor-root .uneditable blockquote {
+  color: @vesper-muted;
+  border-left-color: @vesper-border;
+}
+
+.thread-list .list-item.thread-list-reminder-item,
+.thread-list .list-item.thread-list-reminder-item.unread,
+.send-reminders-header {
+  background: mix(@vesper-mint, @vesper-bg, 8%);
+  color: @vesper-mint;
+  border-color: @vesper-border;
+}
+
+.notifications .notification a {
+  color: @vesper-bg;
+  text-decoration: underline;
+}
+
+// The inbox-zero artwork is an iframe with its own opaque white canvas.
+// Keep the useful empty-state message, without the illustration.
+.empty-state .inbox-zero-animation .animation-wrapper iframe,
+.empty-state .perspective-empty-state > img {
+  display: none;
+}
+
+.empty-state .inbox-zero-animation .animation-wrapper {
+  transform: none;
+}
+
+.empty-state .inbox-zero-animation .animation-wrapper .message {
+  color: @vesper-muted;
+  font-size: 20px;
+  font-weight: 400;
+}

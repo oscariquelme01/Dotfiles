@@ -1,0 +1,7 @@
+# Noctalia's greetd frontend
+noctalia-greeter
+
+# Development tools
+bun-bin
+opencode-bin
+nodejs-git-split-diffs

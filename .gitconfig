@@ -1,15 +1,5 @@
-[includeIf "gitdir:~/masOrange/**"]
-    path = ~/.gitconfig-mas-orange
-
-[includeIf "gitdir:~/youShift/**"]
-    path = ~/.gitconfig-you-shift
-
 [include]
     path = ~/.gitconfig.local
-
-[user]
-	name = oscar
-	email = oscariquelmejato01@gmail.com
 
 [credential]
 	helper = store

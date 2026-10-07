@@ -1,0 +1,124 @@
+// Make corresponding toolbar match threadlist background
+.column-ThreadList,
+.toolbar-ThreadList {
+  height: 100%;
+  background: @threadlist-bg;
+  border-bottom: 1px solid @border-color;
+  //margin-top: 5px;
+  //margin-bottom: 5px;
+}
+
+// jackiehluo -> Hide search bar when buttons appear in list mode
+.toolbar-ThreadList .selection-bar .inner {
+  background: @threadlist-bg;
+}
+
+.list-tabular .list-tabular-item {
+  background-color: @threadlist-bg;
+  border-bottom: 1px solid @border-color !important;
+}
+
+// Using !important so multiple selection actions
+.list-tabular .list-tabular-item:hover {
+  background: @vesper-hover !important;
+}
+
+.list-container .list-item.focused,
+.list-container .list-item.selected,
+.thread-list.handler-split .list-item.selected {
+  background: @vesper-selection;
+  color: @active-thread-text;
+}
+
+body.is-blurred .list-container .list-item.focused,
+body.is-blurred .list-container .list-item.selected,
+body.is-blurred .thread-list.handler-split .list-item.selected {
+  background: @vesper-selection;
+  color: @active-thread-text;
+}
+
+.list-tabular .list-tabular-item.keyboard-cursor {
+  border-left-color: @accent;
+  background: @vesper-selection;
+}
+
+body.is-blurred .list-tabular .list-tabular-item.keyboard-cursor {
+  border-left-color: @vesper-muted;
+}
+
+.outline-view .heading .collapse-button {
+margin-right: 0px;
+}
+
+img[alt="starred.png"] {
+	background-image: none;
+  background-color: @star-color !important;
+}
+
+img[alt="archive.png"] {
+	background-image: none;
+  background-color: @archive-color !important;
+}
+
+img[alt="all.png"] {
+	background-image: none;
+  background-color: @archive-color !important;
+}
+
+img[alt="trash.png"] {
+	background-image: none;
+  background-color: @trash-color !important;
+}
+
+img[alt="snoozed.png"] {
+	background-image: none;
+  background-color: @snoozed-color !important;
+}
+
+img[alt="inbox.png"] {
+	background-image: none;
+  background-color: @inbox-color !important;
+}
+
+img[alt="unread.png"] {
+	background-image: none;
+  background-color: @inbox-color !important;
+}
+
+img[alt="reminders.png"] {
+	background-image: none;
+  background-color: @reminders-color !important;
+}
+
+
+img[alt="sent.png"] {
+	background-image: none;
+  background-color: @inbox-color !important;
+}
+
+
+img[alt="spam.png"] {
+	background-image: none;
+  background-color: @other-color !important;
+}
+
+
+img[alt="drafts.png"] {
+	background-image: none;
+  background-color: @other-color !important;
+}
+
+
+img[alt="activity.png"] {
+	background-image: none;
+  background-color: @inbox-color !important;
+}
+
+img[alt="icon-toolbar-activity.png"]:hover {
+	background-image: none;
+  background-color: @other-color !important;
+}
+
+.thread-search-bar .suggestions .suggestion {
+color: @vesper-text;
+}

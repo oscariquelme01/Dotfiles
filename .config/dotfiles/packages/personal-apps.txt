@@ -1,0 +1,2 @@
+# Optional personal applications shown by bootstrap.sh
+mailspring-bin

@@ -1,0 +1,48 @@
+.toolbar-window-controls {
+  display: none !important;
+}
+
+// Compose Button Overrides
+.sheet-toolbar .btn.btn-toolbar.item-compose {
+  background: transparent;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 30px;
+  align-self: center;
+  opacity: 1;
+  padding: 0;
+  margin: 0;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  line-height: 1;
+  border-radius: 6px;
+  -webkit-app-region: no-drag;
+  transition: background 150ms;
+  &:hover, &:focus-visible {
+    background: @vesper-hover;
+  }
+}
+
+// Compose button icon color
+.sheet-toolbar .btn.btn-toolbar.item-compose img.content-mask {
+  background-color: @accent;
+  margin: 0;
+}
+
+// Activity List
+.toolbar-activity {
+  margin-right: 15px !important;
+}
+
+.activity-list-container {
+  .disclosure-triangle div {
+    margin-left: 4px;
+    margin-top: -2px;
+  }
+}

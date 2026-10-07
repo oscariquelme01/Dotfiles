@@ -1,0 +1,30 @@
+@import "ui-variables";
+// No index.less: Mailspring must load email-frame.less as its own stylesheet
+// so the email iframe can discover it by its source-path.
+@import "components/sparky-window-controls";
+@import "components/sparky-toolbars";
+@import "components/sparky-threadlist";
+@import "components/sparky-composer";
+@import "components/sparky-drafts";
+@import "components/sparky-inputs";
+@import "components/sparky-message-list";
+@import "components/sparky-sidebar";
+@import "components/sparky-swiping";
+@import "components/sparky-thread-icons";
+@import "components/vesper-interface";
+
+@component-active-color: @accent;
+@panel-background-color: @sidebar;
+
+.preferences-sidebar,
+.preferences-content {
+  background: @messagelist-bg;
+}
+
+.preferences-wrap .preferences-content > .scroll-region-content {
+  padding-bottom: 100px;
+}
+
+html {
+	font-family: 'Nylas-Pro', 'Helvetica', sans-serif !important;
+}

@@ -1,6 +1,0 @@
-[user]
-	name = oscar
-	email = oscar@you-shift.com
-
-[core]
-    sshCommand = ssh -i ~/.ssh/you-shift -o IdentitiesOnly=yes

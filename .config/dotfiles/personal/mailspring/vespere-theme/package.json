@@ -1,0 +1,13 @@
+{
+  "name": "mailspring-theme-vespere",
+  "displayName": "Vespere",
+  "theme": "vespere",
+  "version": "1.0.1",
+  "description": "A Vesper-inspired fork of the Sparky Mailspring theme",
+  "license": "MIT",
+  "engines": {
+    "nylas": "*",
+    "mailspring": "*"
+  },
+  "private": true
+}
