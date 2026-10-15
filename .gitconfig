@@ -21,3 +21,6 @@
 	prompt = false
 [merge]
     conflictStyle = zdiff3
+[user]
+	email = oscariquelmejato@gmail.com
+	name = oscar
